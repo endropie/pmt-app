@@ -1,1 +1,70 @@
 // app global css in SCSS form
+body.body--light {
+  color: var(--q-light);
+  background-color: var(--q-light-page);
+}
+
+body.body--dark {
+  color: var(--q-dark);
+  background-color: var(--q-dark-page);
+}
+
+.text-light {
+  color: var(--q-light) !important;
+}
+
+.bg-light {
+  background-color: var(--q-light) !important;
+}
+
+.text-lighten {
+  color: var(--q-lighten) !important;
+}
+
+.bg-lighten {
+  background-color: var(--q-lighten) !important;
+}
+
+.text-lighter {
+  color: var(--q-lighter) !important;
+}
+
+.bg-lighter {
+  background-color: var(--q-lighter) !important;
+}
+
+.text-primary-light {
+  color: var(--q-primary-light) !important;
+}
+
+.bg-primary-light {
+  background-color: var(--q-primary-light) !important;
+}
+
+.text-primary-lighten {
+  color: var(--q-primary-lighten) !important;
+}
+
+.bg-primary-lighten {
+  background-color: var(--q-primary-lighten) !important;
+}
+
+.text-primary-dark {
+  color: var(--q-primary-dark) !important;
+}
+
+.bg-primary-dark {
+  background-color: var(--q-primary-dark) !important;
+}
+
+.text-primary-darken {
+  color: var(--q-primary-darken) !important;
+}
+
+.bg-primary-darken {
+  background-color: var(--q-primary-darken) !important;
+}
+
+.q-table__card {
+  color: #505050;
+}
