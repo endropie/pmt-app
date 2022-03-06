@@ -6,7 +6,6 @@ import { Notify, LocalStorage } from 'quasar'
 import { AccessState, AccessCredentials, AccessResponse } from 'src/types/access'
 
 const ACCESS_KEY = 'accessable-token',
-  ACCESS_TYPE_KEY = 'accessable-type',
   ACCESS_HEADER_KEY = 'X-Accessable',
   ACCESS_STORE_URI = '/api/common/accessable',
   ACCESS_FETCH_URI = '/api/common/accessable';
@@ -23,19 +22,22 @@ const state = reactive<AccessState>({
 
 export const useAccessable = () => {
 
-  const token = LocalStorage.getItem(ACCESS_KEY) as string
+  if (LocalStorage.getItem(ACCESS_KEY)) {
+    state.access_token = LocalStorage.getItem(ACCESS_KEY) as string
+  }
 
   const setAccess = (data: AccessResponse): void => {
-    console.warn('setAccessAbility', data);
+
     state.data = data.data
+    state.type = data.type
   }
 
   const setToken = (data: AccessResponse): void => {
-    console.warn('setAccessToken', data);
+
     if (data.access_token) {
+      state.access_token = data.access_token
       setHeader(ACCESS_HEADER_KEY, `Accessable ${data.access_token}`)
       LocalStorage.set(ACCESS_KEY, data.access_token)
-      LocalStorage.set(ACCESS_TYPE_KEY, data.type)
     }
   }
 
@@ -45,10 +47,10 @@ export const useAccessable = () => {
 
       if (state.data) resolve(true)
 
-      else if (token) {
-        api.get<AccessResponse>(ACCESS_FETCH_URI, { headers: { 'X-Accessable': `Accessable ${token}` } })
+      else if (state.access_token) {
+        api.get<AccessResponse>(ACCESS_FETCH_URI, { headers: { 'X-Accessable': `Accessable ${state.access_token}` } })
           .then((response) => {
-            setHeader(ACCESS_HEADER_KEY, `${response.data.type} ${token}`)
+            setHeader(ACCESS_HEADER_KEY, `${response.data.type} ${response.data.access_token}`)
             setAccess(response.data)
             resolve(true)
           })
@@ -66,18 +68,22 @@ export const useAccessable = () => {
   }
 
   const access = (data: AccessCredentials) => {
-    console.warn('ACCESS', data);
+
+    state.data = undefined
+    state.type = undefined
+    state.access_token = undefined
 
     return new Promise((resolve, reject) => {
 
       api.post<AccessResponse>(ACCESS_STORE_URI, data)
         .then((response) => {
-          console.warn('ACCESS', response)
+
           setToken(response.data)
+
           resolve(response.data)
         })
         .catch((error: AxiosError) => {
-          console.error('ACCESS', error.response || error)
+
           Notify.create({
             message: 'LOGIN FAILED',
             classes: 'text-medium',
@@ -91,7 +97,6 @@ export const useAccessable = () => {
 
   const clear = () => {
     LocalStorage.remove(ACCESS_HEADER_KEY)
-    LocalStorage.remove(ACCESS_TYPE_KEY)
     unsetHeader(ACCESS_KEY)
   }
 

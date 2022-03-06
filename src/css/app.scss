@@ -5,7 +5,7 @@ body.body--light {
 }
 
 body.body--dark {
-  color: var(--q-dark);
+  color: #eee;
   background-color: var(--q-dark-page);
 }
 
@@ -65,6 +65,6 @@ body.body--dark {
   background-color: var(--q-primary-darken) !important;
 }
 
-.q-table__card {
+body.body--light .q-table__card {
   color: #505050;
 }

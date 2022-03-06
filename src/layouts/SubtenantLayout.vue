@@ -1,10 +1,10 @@
-<template>
+or<template>
   <q-layout view="lHh Lpr lFf" class="font-inter">
     <q-header elevated :class="!$q.dark.isActive ? 'bg-primary' : 'bg-dark'">
       <q-toolbar>
         <q-icon name="business" size="28px" />
         <q-toolbar-title>
-          <h1 class="text-white font-bold text-lg text-uppercase">KECY - Distributor</h1>
+          <h1 class="text-white font-bold text-lg text-uppercase">KECY - Agency</h1>
         </q-toolbar-title>
 
         <q-btn flat dense round :icon="$q.dark.isActive ? 'light_mode' : 'dark_mode'" aria-label="Add" @click="$q.dark.toggle()" />

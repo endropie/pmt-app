@@ -1,13 +1,11 @@
 import { reactive, toRefs } from 'vue';
-import { useQuasar } from 'quasar';
+import { QTable, useQuasar } from 'quasar';
 import { api as $api } from 'src/boot/axios';
-import { ErrorResponse, TableResponse, TableState, TableProperty, TableResource, TablePagination, TablePaginable } from 'src/types/utils';
+import { ErrorResponse, TableResponse, TableState, TableProperty, TableResource } from 'src/types/utils';
 
 
 export default function useTable<R = unknown>(property: TableProperty): TableResource<R> {
   const $q = useQuasar();
-
-  console.warn('property', property);
 
   const state = reactive<TableState<R>>({
     rows: [],
@@ -22,33 +20,31 @@ export default function useTable<R = unknown>(property: TableProperty): TableRes
     }
   })
 
-  const getParams = (pagination?: TablePagination) => {
+  const getRequestParams = () => {
     let params: Record<string, unknown> = ({})
+
     if (state.pagination !== null) {
-      pagination = pagination || state.pagination
       params = {
-        page: pagination.page,
-        limit: pagination.rowsPerPage,
-        sort: pagination.sortBy,
-        descending: pagination.descending,
+        page: state.pagination.page,
+        limit: state.pagination.rowsPerPage,
+        sort: state.pagination.sortBy,
+        descending: state.pagination.descending,
         ...params
       }
     }
     return params
   }
 
-  const onRequest = (paginable: TablePaginable | undefined, doneFn: CallableFunction | undefined) => {
+  const onLoad = (doneFn: CallableFunction | undefined) => {
 
     state.loading = true;
-    const params = getParams(paginable?.pagination)
-    console.warn('GET', property.url, params);
+    const params = getRequestParams()
+
     $api.get<TableResponse<R[]>>(property.url, { params })
       .then((response) => {
-        console.warn('RESPONSE ONREQUEST', response.data);
-        // set rows of data table
+
         state.rows.splice(0, state.rows.length, ...(response.data.data as typeof state.rows));
 
-        // Update local pagination object
         if (state.pagination !== null && response.data.meta) {
           state.pagination.page = response.data.meta.current_page;
           state.pagination.rowsNumber = response.data.meta.total;
@@ -69,9 +65,21 @@ export default function useTable<R = unknown>(property: TableProperty): TableRes
       });
   };
 
+  const onRequest: QTable['requestServerInteraction'] = (props): void => {
+    if (state.pagination !== null && props?.pagination) {
+      if (props.pagination?.page) state.pagination.page = props.pagination?.page
+      if (props.pagination?.rowsPerPage) state.pagination.rowsPerPage = props.pagination?.rowsPerPage
+      if (props.pagination?.sortBy) state.pagination.sortBy = props.pagination?.sortBy
+      if (props.pagination?.descending) state.pagination.descending = props.pagination?.descending
+    }
+
+    onLoad(undefined)
+  };
+
 
   return {
     ...toRefs(state),
+    onLoad,
     onRequest,
   };
 }

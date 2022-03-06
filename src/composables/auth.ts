@@ -48,7 +48,6 @@ export const useAuth = (): AuthInstance => {
 
   const authenticated = async (): Promise<boolean> => {
     return new Promise((resolve) => {
-      console.log('AUTHENRICATED', state.user?.name)
 
       if (state.user) resolve(true)
 

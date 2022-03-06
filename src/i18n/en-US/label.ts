@@ -2,8 +2,8 @@
 // so you can safely delete all default props below
 
 export default {
-  type: {
-    tenant: 'Agency',
-    subtenant: 'Kiosk'
-  },
+  contact: 'Contact | {c} Contacts',
+  tenant: 'Distributor | {c} Distributors',
+  subtenant: 'Agency | Agent | {c} Agents',
+  company: 'Compaign | Company | {count} Companies ',
 };

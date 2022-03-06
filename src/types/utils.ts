@@ -1,5 +1,6 @@
 import { Ref, UnwrapRef } from 'vue';
 import { AxiosError } from 'axios';
+import { QTable } from 'quasar';
 
 export interface ErrorState {
   error: {
@@ -45,7 +46,8 @@ export type TableResource<R> = {
   rows: Ref<UnwrapRef<R[]>>;
   loading: Ref<boolean>;
   pagination: Ref<TablePagination | null>;
-  onRequest: { (paginable?: TablePaginable | undefined, doneFn?: CallableFunction | undefined): void };
+  onLoad: { (doneFn?: CallableFunction | undefined): void };
+  onRequest: QTable['requestServerInteraction'];
 }
 
 
